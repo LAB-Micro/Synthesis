@@ -1,0 +1,3 @@
+basic-miktex-2.9.5872 #CORE LATEX
+texmakerwin32_install #HELFUL
+inkscape-0.91-x64 # OPTIONAL: TO CREATE IMAGE (ADVANCE PAINT)

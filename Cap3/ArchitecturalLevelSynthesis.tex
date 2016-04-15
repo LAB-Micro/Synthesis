@@ -1,0 +1,118 @@
+\section{Architectural-Level Synthesis}
+Trying to pass from logic to architectural level racecourse at higher level allow to see all possible options. Having less details, it possible work with higher complex circuit. You can decide to use a bigger block with high complexity at logic level, but the block that you have connected and improved don't allow to see a global improvement.\\
+The motivations to raise abstraction level:
+\begin{itemize}
+\item Reduce specification of details
+\item Extend designer base
+\item Ease modifications and extensions
+\item Reduce design time
+\item Explore and optimize macroscopic structure
+\end{itemize}
+Architectural synthesis means constructing the macroscopic structure of a digital circuit, starting from behavioral models that can be captured by data-flow or sequencing graphs. The outcome of architectural synthesis is both a structural view of the circuit, in particular of its data path, and a logic-level specification of its control unit. The data path is an interconnection of  \textit{resources} (implementing arithmetic or logic functions), \textit{steering logic circuits}  (e.g., multiplexers and buses), that send data to the appropriate destination at the appropriate time and  \textit{registers}  or  \textit{memory arrays}  to store data.
+\begin{figure}[H]
+	 \centering
+	 \includegraphics[height=50mm]{./Cap3/Images/Image01.png}
+	 \caption[Optional caption]{Example of Architectural synthesis}
+	 \label{fig:archSy}
+\end{figure}
+
+\subsection{Hardware and software compilation}
+A \textit{software} compiler consists of a  front end  that transforms a program into an intermediate form  and a  back end  that translates the intermediate form into the machine code for a given architecture. The front end is language dependent, and the back end varies according to the target machine. Similarly, a \textit{hardware} compiler can be seen as consisting of a front end, an optimizer and a back end (Figure 3.16). The back end is much more complex than a software compiler, because of the requirements on timing and interface of the internal
+operations.
+\begin{figure}[H]
+	 \centering
+	 \includegraphics[height=50mm]{./Cap3/Images/Image02.png}
+	 \caption[Optional caption]{Hardware and software compilation}
+	 \label{fig:comp}
+\end{figure}
+
+\subsubsection{Compilation  Techniques}
+The front end of a compiler is responsible for  \textit{lexical}  and  \textit{syntax} analysis, \textit{parsing}  and \textit{creation} of the intermediate form. Its first task is to verify that they satisfy the syntax rules of the language. The parser has knowledge of the grammar of the language and it generates a set of  parse trees.  A parse tree is a tree-like representation of the syntactic structure of a language. An example is shown in Figure \ref{fig:parseTree}. Syntactic errors, as well as some semantic errors are detected at this stage.
+\begin{figure}[H]
+	 \centering
+	 \includegraphics[height=50mm]{./Cap3/Images/Image03.png}
+	 \caption[Optional caption]{Example  of  a  parse  tree  for  the statement  $ a  =  p  +  y  *  r $}
+	 \label{fig:parseTree}
+\end{figure}
+Branching constructs can be used to model logic networks. A common way to exploit branching is by means of conditional assignments to a variable.  A  branching construct can be replaced by one logic expression, representing the disjunction of the possible assignments in conjunction with the test on the clause. When the branching construct does not specify an assignment for all values of the clause, the missing assignments represent  \textit{don't  care}  conditions on that variable. The compilation of hardware models at the architectural level involves a full \textit{semantic}, \textit{analyses}  that comprises  \textit{data-flow}  and  \textit{control-flow}  analyses.
+\begin{figure}[H]
+	 \centering
+	 \includegraphics[height=50mm]{./Cap3/Images/Image04.png}
+	 \caption[Optional caption]{Data-flow graph and Control-data-flow graph}
+	 \label{fig:dataFlow}
+\end{figure}
+
+\subsubsection{Optimization Techniques}
+Behavioral optimization is a set of transformations that minimize the amount of information needed to specify the partial order of tasks. It can be applied directly to the parse trees, or during the generation of the intermediate form.\\
+Algorithms for behavioral optimization of  HDL  models can he classified as data-flow and control-flow
+oriented.
+\begin{itemize}
+\item \textbf{DATA-FLOW-BASED TRANSFORMATIONS}: 
+	\begin{itemize}
+	\item \textit{Tree-height reduction}: This transformation applies to the arithmetic expression trees and strives to achieve the expression split into two-operand expressions, so that the parallelism available in hardware can be exploited at best. The simplest reduction algorithm uses the \textit{commutativity} and \textit{associativity} of the addition and multiplication. It permutes the operands to achieve subexpressions involving the same operator, which can be reduced by using the associative property. A  further refinement can be achieved by exploiting the \textit{distributive} property, possibly at the expense of adding an operation.
+	\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{./Cap3/Images/Image05.png}
+        \caption{using Commutativity and Associativity}
+        \label{fig:comAss}
+    \end{subfigure}
+    \quad\quad\quad
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{./Cap3/Images/Image06.png}
+        \caption{using Distributivity}
+        \label{fig:Dis}
+    \end{subfigure}
+	\end{figure}
+	\item \textit{constant and variable propagation}:  \textit{Constant} propagation consists of detecting constant operands and pre-computing the value of the operation with that operand. Since the result may be again a constant, the new constant can be propagated to those operations that use it as input.
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.25\textwidth]{./Cap3/Images/Image07.png}
+	\end{figure}
+	\textit{Variable} propagation consists of detecting the copies  of variables, i.e., the assignments like  x  =  y,  and using the right-hand side in the following references in place of the left-hand side. 
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.25\textwidth]{./Cap3/Images/Image08.png}
+	\end{figure}
+	\item \textit{Common subexpression elimination}: The search for common arithmetic subexpressions relies in general on finding isomolphic patterns in the parse trees (\textit{Isomorphic}: if the subtree has the same inputs and the same operators). This step is greatly simplified if the arithmetic expressions are reduced to two-input ones. Then, this transformation consists of selecting a target arithmetic operation and searching for a preceding one of the same type and with the same operands.
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.4\textwidth]{./Cap3/Images/Image09.png}
+	\end{figure}
+	\item \textit{Dead code elimination};  Dead code consists of all those operations that cannot be reached, or whose result is never referenced elsewhere. 
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.4\textwidth]{./Cap3/Images/Image10.png}
+	\end{figure}
+	\item \textit{Operator strength reduction}:  Operator strength reduction means reducing the cost of implementing an operator by using a simpler one. 
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.3\textwidth]{./Cap3/Images/Image11.png}
+	\end{figure}
+	\item \textit{Code motion}:  Code motion often applies to loop invariants, i.e., quantities that are computed inside an iterative construct but whose values do not change from iteration to iteration. The goal is to avoid the repetitive evaluation of the same expression.
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.3\textwidth]{./Cap3/Images/Image12.png}
+	\end{figure}
+	\end{itemize}
+\item \textbf{CONTROL-FLOW-BASED TRANSFORMATIONS}:  The following transformations are typical of hardware compilers. In some cases these transformations are automated, in others they are user driven.
+	\begin{itemize}
+	\item \textit{Model expansion}: Consists in flattening locally the model call hierarchy. Therefore the called model disappears, being swallowed by the calling one. A  possible benefit is that the scope of application of some optimization techniques  is enlarged.
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.3\textwidth]{./Cap3/Images/Image13.png}
+	\end{figure}
+	\item \textit{Conditional expansion}:  A  conditional construct can be always transformed into a parallel construct with a test in the end. Under some circumstances this transformation can increase the performance of the circuit. 
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.5\textwidth]{./Cap3/Images/Image14.png}
+	\end{figure}
+	\item \textit{Loop expansion}:  Loop expansion, or unrolling, applies to an iterative construct with data-independent exit conditions. The loop is replaced by as many instances of its body as the number of operations. The benefit is again in expanding the scope of other transformations. 
+	\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.4\textwidth]{./Cap3/Images/Image15.png}
+	\end{figure}
+	\end{itemize}
+\end{itemize}
+
+\subsection{Architectural synthesis and optimization}
