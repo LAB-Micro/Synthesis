@@ -116,3 +116,77 @@ oriented.
 \end{itemize}
 
 \subsection{Architectural synthesis and optimization}
+Architectural synthesis means constructing the macroscopic structure of a digital circuit, starting from behavioral models that can be captured by data-flow or sequencing graphs. The outcome of architectural synthesis is both a structural view of the circuit, in particular of its data path, and a logic-level specification of its control unit.\\
+Circuit implementations are evaluated on the basis of the following objectives: \textit{area}, \textit{cycle-time} (i.e., the clock period) and \textit{latency} (i.e., the number of cycles to perform all operations) as well as \textit{throughput} (i.e., the computation rate) in the case of pipelined circuits. Note that area and
+performance measures can only be estimated at the architectural level, because just the macroscopic structure of the circuit is dealt with.  In  general, area and performance depend on the resources as well as on the steering logic, storage circuits, wiring and control.  A  common simplification is to consider area and performance as depending only on the resources. Circuits for which this assumption holds are called \textit{resource-dominated circuits}.\\
+In the \textit{resource-dominated circuits} the estimation of the \textit{area} is sum of the area of the resources bound to the operations, mainly determined by  \textit{binding/sharing}. The estimation of the \textit{latency} is start time of the sink operation minus start time of the source operation, mainly determined by  \textit{scheduling}.\\
+In the \textit{non resource-dominated circuits}, the \textit{area} is also affected by registers, steering logic, wiring and control. The \textit{cycle-time} is also affected by steering logic, wiring and (possibly) control.\\
+Constraints in architectural synthesis can  be  classified into two major groups:  \textit{interface constraints}  and  \textit{implementation constraints}. Interface constraints are additional specifications to ensure that the circuit can be embedded in a given environment. They relate to the format and timing of the I/O data transfers. Implementation constraints reflect the desire of the designer to achieve a structure with some properties. Examples are area constraints and performance constraints, e.g.,  cycle-time  and/or  latency  bounds. A  different kind  of  implementation constraint is a resource \textit{binding constraint}. In the case of \textit{resource-dominated circuits}, the area is determined only by the resource usage. Hence bounding the number of resources is equivalent to imposing an upper bound on the area.
+\bigskip \\
+Performance constraints:
+\begin{itemize}
+\item Cycle-time
+\item Latency of a set of operations
+\item Time spacing between operation pairs\
+\end{itemize}
+Area constraints:
+\begin{itemize}
+\item Number and type of resources
+\item Resource allocation
+\item Partial binding
+\end{itemize}
+
+\subsection{The Temporal Domain: Scheduling}
+We denote the execution delays of the operations by the set $ D = \lbrace d_{i};\:i=0,1,...,n \rbrace $. We define the  \textit{start time} of an operation as the time at which the operation starts its execution. The start times of the operations, represented by the set $ T = \lbrace t_{i};\:i=0,1,...,n \rbrace $,  are attributes of the vertices of the sequencing graph.  \textit{Scheduling}  is the task of determining the start times, subject to the precedence constraints specified by the sequencing graph. The \textit{latency} of a scheduled sequencing graph is denoted by $ \lambda $,  and it is the difference between the start time of the sink and the start time of the source, i.e.,  $ \lambda=t_{n}-t_{0} $.\\
+A \textit{ scheduled sequencing  graph}  is a vertex-weighted sequencing graph, where each vertex is labeled by its start time.  A  schedule may have to satisfy timing and/or resource usage constraints. Different scheduling algorithms have been proposed, addressing unconstrained and constrained problems.
+\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.5\textwidth]{./Cap3/Images/Image16.png}
+	 \caption[Optional caption]{Sequencing  graph}
+	 \label{fig:Sequ}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{./Cap3/Images/Image17.png}
+    \end{subfigure}
+    \quad\quad\quad
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{./Cap3/Images/Image18.png}
+    \end{subfigure}
+    \caption[Optional caption]{Scheduled  sequencing  graph. The latency of the schedule is $ \lambda=t_{n}-t_{0} = 5-1=4 $}
+    \label{fig:ExaSeq}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \includegraphics[width=\textwidth]{./Cap3/Images/Image19.png}
+    \end{subfigure}
+    \quad\quad\quad
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{./Cap3/Images/Image20.png}
+    \end{subfigure}
+    \caption[Optional caption]{Scheduled  sequencing  graph  under  resource constraints. The latency of the schedule is $ \lambda=t_{n}-t_{0} = 8-1=7 $}
+    \label{fig:ExaSeqCons}
+\end{figure}
+
+\subsection{The  Spatial Domain: Binding}
+Let us consider now the relations among operations and resources. We define the type  of an operation as the type of computation it performs. It may be an arithmetic operation, such as addition or multiplication, or an application-specific operation, such as evaluating a Boolean function.\\
+It is interesting to note that there may be more than one operation with the same type. In this case \textit{resource sharing}  may be applied. Conversely, the binding problem can be extended to a resource \textit{selection problem} by assuming that there may be more than one resource applicable to an operation.\\
+A  fundamental concept that relates operations to resources is  \textit{binding}. It specifies which resource implements an operation. A  simple case of binding is  a  dedicated resource. Each operation is bound to
+one resource, and the resource binding is  a  one-to-one function.\\
+A  resource binding may associate one instance of a resource type to more than one operation. In this case, that particular resource is  shared  and binding is a many-to-one function.  A  necessary condition for  a  resource binding to produce a valid circuit implementation is that the operations corresponding to a shared resource do not execute concurrently. A  resource binding can  be  represented by a  labeled hypergraph.
+\begin{figure}[H]
+	 \centering
+	 \includegraphics[width=0.5\textwidth]{./Cap3/Images/Image21.png}
+	 \caption[Optional caption]{Labeled hypergraph}
+	 \label{fig:hypergraph}
+\end{figure}
+
+\subsection{Resources}
+Resources implement different types of functions in hardware. They can be broadly classified as follows:
+\begin{itemize}
+\item \textit{Functional resources}  process data. They implement arithmetic or logic functions
+\item \textit{Memory resources}  store data. Examples are registers and memory.
+\item \textit{Interface resources}  support data transfer. Interface resources include busses that may he used as a major means  of  communication inside a data path.
+\end{itemize}
