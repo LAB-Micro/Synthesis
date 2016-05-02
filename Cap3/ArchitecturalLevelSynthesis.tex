@@ -1,6 +1,6 @@
 \section{Architectural-Level Synthesis}
-Trying to pass from logic to architectural level racecourse at higher level allow to see all possible options. Having less details, it possible work with higher complex circuit. You can decide to use a bigger block with high complexity at logic level, but the block that you have connected and improved don't allow to see a global improvement.\\
-The motivations to raise abstraction level:
+Passing from logic to architectural level allow to see all possible options. Having less details, it possible work with higher complex circuit. You can decide to use a bigger block with high complexity at logic level, but the block that you have connected and improved don't allow to see a global improvement.\\
+The motivations to raise abstraction level are:
 \begin{itemize}
 \item Reduce specification of details
 \item Extend designer base
@@ -31,7 +31,7 @@ The front end of a compiler is responsible for  \textit{lexical}  and  \textit{s
 \begin{figure}[H]
 	 \centering
 	 \includegraphics[height=50mm]{./Cap3/Images/Image03.png}
-	 \caption[Optional caption]{Example  of  a  parse  tree  for  the statement  $ a  =  p  +  y  *  r $}
+	 \caption[Optional caption]{Example  of  a  parse  tree  for  the statement  $ a  =  p  +  q  *  r $}
 	 \label{fig:parseTree}
 \end{figure}
 Branching constructs can be used to model logic networks. A common way to exploit branching is by means of conditional assignments to a variable.  A  branching construct can be replaced by one logic expression, representing the disjunction of the possible assignments in conjunction with the test on the clause. When the branching construct does not specify an assignment for all values of the clause, the missing assignments represent  \textit{don't  care}  conditions on that variable. The compilation of hardware models at the architectural level involves a full \textit{semantic}, \textit{analyses}  that comprises  \textit{data-flow}  and  \textit{control-flow}  analyses.
@@ -77,7 +77,7 @@ oriented.
 	\item \textit{Common subexpression elimination}: The search for common arithmetic subexpressions relies in general on finding isomolphic patterns in the parse trees (\textit{Isomorphic}: if the subtree has the same inputs and the same operators). This step is greatly simplified if the arithmetic expressions are reduced to two-input ones. Then, this transformation consists of selecting a target arithmetic operation and searching for a preceding one of the same type and with the same operands.
 	\begin{figure}[H]
 	 \centering
-	 \includegraphics[width=0.4\textwidth]{./Cap3/Images/Image09.png}
+	 \includegraphics[width=0.5\textwidth]{./Cap3/Images/Image09.png}
 	\end{figure}
 	\item \textit{Dead code elimination};  Dead code consists of all those operations that cannot be reached, or whose result is never referenced elsewhere. 
 	\begin{figure}[H]
@@ -178,8 +178,8 @@ one resource, and the resource binding is  a  one-to-one function.\\
 A  resource binding may associate one instance of a resource type to more than one operation. In this case, that particular resource is  shared  and binding is a many-to-one function.  A  necessary condition for  a  resource binding to produce a valid circuit implementation is that the operations corresponding to a shared resource do not execute concurrently. A  resource binding can  be  represented by a  labeled hypergraph.
 \begin{figure}[H]
 	 \centering
-	 \includegraphics[width=0.5\textwidth]{./Cap3/Images/Image21.png}
-	 \caption[Optional caption]{Labeled hypergraph}
+	 \includegraphics[width=0.7\textwidth]{./Cap3/Images/Image21.png}
+	 \caption[Optional caption]{Labeled hypergraph:  only four multipliers and two  ALUs  are required}
 	 \label{fig:hypergraph}
 \end{figure}
 

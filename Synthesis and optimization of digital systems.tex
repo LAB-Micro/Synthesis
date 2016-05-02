@@ -28,6 +28,21 @@
 \usepackage{subcaption}
 
 %Tree
+\usepackage{forest}
+
+%Style Section
+\usepackage[explicit]{titlesec}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection}{1em}{\MakeUppercase{#1}}	
+  
+%FrameBox
+\usepackage[usestackEOL]{stackengine}
+
+%Table
+\usepackage{multirow}
+\setlength{\tabcolsep}{0.5em} % for the horizontal padding
+\renewcommand{\arraystretch}{1.2}% for the vertical padding
 
 
 \date{}
@@ -36,7 +51,6 @@
 
 \newcommand{\hmwkTitle}{Synthesis and optimization of digital systems} % Assignment title
 \newcommand{\hmwkDueDate}{2015/2016} % Due date
-\newcommand{\hmwkAuthorName}{Francesco} % Your name
 \newcommand{\spaceBreackLine}{3mm} 
 
 \title{
@@ -67,5 +81,9 @@
 \input{./Cap3/ArchitecturalLevelSynthesis}
 \cleardoublepage
 \input{./Cap4/Scheduling}
+\cleardoublepage
+\input{./Cap5/ResourceSharing}
+\cleardoublepage
+\input{./Cap6/LogicSynthesisOpt}
 	
 \end{document}
