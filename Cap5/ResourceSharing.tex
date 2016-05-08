@@ -136,4 +136,107 @@ Let us consider now the \textit{conflict graphs} for each resource type. Vertice
     \caption{}
 \end{figure}
 
-LEFT-EDGE ALGORITHM
+\paragraph{Left-Edge Algorithm}
+is a coloring algorithm applied on an inteval graph. This algorithm takes as input the set of intervals with \textit{left and right edge} and a set of \textit{colors} (initially one). The principles of the algorithm are the following ones:
+\begin{enumerate}
+	\item Sort the invervals in a \textit{list} by the \textit{left} edge
+	\item Assing non overlapping interval to the forst color according with the \textit{sorted list}.
+	\item When epossible intevals are exhausted, increase color and repeat.
+\end{enumerate}
+\begin{figure}[H]
+	\centering$  $
+	\includegraphics[width=0.60\textwidth]{./Cap5/Images/Image10.png}
+	\caption{Pseudo-Code of Left-Edge algorithm}
+	\label{fig:PseudoLEalg}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{./Cap5/Images/Image11.png}
+		\caption{}
+		\label{fig:conflGraph}
+	\end{subfigure}
+	\quad\quad\quad
+	\begin{subfigure}[b]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{./Cap5/Images/Image12.png}
+		\caption{}
+		\label{fig:intervalsLE}
+	\end{subfigure}
+	\quad\quad\quad
+	\begin{subfigure}[b]{0.2\textwidth}
+		\includegraphics[width=\textwidth]{./Cap5/Images/Image13.png}
+		\caption{}
+		\label{fig:coloredConflict}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.2\textwidth}
+		\includegraphics[width=\textwidth]{./Cap5/Images/Image14.png}
+		\caption{}
+		\label{fig:coloring}
+	\end{subfigure}
+	\caption{}
+\end{figure}
+\subsection{Register Sharing}
+Registers are used to hold values of variables and to share them we have to consider their \textit{lifetime} (interval between the generation and the last reference of a variable). Variables that are alive in different intervals or under alternative conditions can share the same register. Such variables are called \textit{compatible}
+\bigskip\\
+Starting from a schedule and assuming that variables with multiple assignment are aliased, we can derive the lifetime of each variables and build a \textit{Conflict Graph} similar to previous ones but this time: 
+\begin{enumerate}
+	\item Vertices $\longleftrightarrow$ variables.
+	\item Edges $\longleftrightarrow$ Overlaps (between variables lifetime)
+\end{enumerate}
+Next, we can build the \textbf{Compatibility} Graph that complement the conflict graph and show us.
+\paragraph{Algorithm: }
+Starting from a lifetime conflict graph, our goal is to find the \textit{minimum} number of registers storing all the variables. To reach this goal we can use the \textit{Left-Edge algorithm} (polynomial complexity) but if there are iterative conflict (some variables are alive across the iteration boundary) coloring problem is intractable, so we have to use heuristic algorithms.
+\subsection{Bus Sharing and Binding}
+Busses act as transfer resources that feed data to functional resources. The operation of writing a specific bus can be modeled explicitly as a vertex in the sequencing graph model. In this case, the compatible (or conflicting) data transfers may be represented by compatibility (or conflict) graphs, as in the case of functional resources.
+\bigskip\\
+Two problems then arise:
+\begin{enumerate}
+	\item Find the minimum number of busses to accommodate all (or part of) the data transfers
+	\item Find the maximum number of
+	data transfers that can be done through a given number of busses.
+\end{enumerate}
+These problems are analogous to the multi-port binding problem and can be modeled by \textit{ILP constraints}.
+\subsection{Module Selection Problem}
+The resource-type selection problem, called also module selection, is a \textit{generalization of the binding problem}, where we assume that more than one resource type can match the functional requirements of an operation type. We say that two resource types are \textbf{compatible} if they can perform the same operation. An example is given by the addition operation and the resource types corresponding to \textit{ripple-carry} and \textit{carry look-ahead} adders. Both resource types fulfill the required functionality, but with different area and propagation delay that are the decision variables for this type of problem.
+\bigskip\\
+Several \textit{heuristic methods} have been proposed for the module selection problem. When a minimum-latency schedule is the goal, the fastest resource types are used in scheduling. Resource sharing and module selection are then applied to minimize the area, in that case slower and smaller resources can be assigned to non-critical operations.
+
+\paragraph{Data path synthesis}
+is applied after resource binding and produce: the connection of resources to \textit{multiplexers busses and registers}, interface towards control unit and \textit{I/O ports}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.50\textwidth]{./Cap5/Images/Image15.png}
+	\caption{Example of Data path synthesis}
+	\label{fig:dpsynth}
+\end{figure}
+
+\paragraph{Control synthesis}
+is referred to the synthesis of the control unit starting from scheduling model and obtaining a \textit{syncronous FSM}. The phisical implementation of the control unit can be done with \textit{Hard wired FSM} 
+\begin{itemize}
+	\item \textit{Hard wired} FSM 
+	\item Memory-based Microcode (programmable)
+\end{itemize} 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.60\textwidth]{./Cap5/Images/Image16.png}
+	\caption{Example of Control synthesis}
+	\label{fig:contrsynth}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.30\textwidth}
+		\includegraphics[width=\textwidth]{./Cap5/Images/Image17.png}
+		\caption{}
+		\label{fig:hardWiredCU}
+	\end{subfigure}
+	\quad\quad\quad
+	\begin{subfigure}[b]{0.30\textwidth}
+		\includegraphics[width=\textwidth]{./Cap5/Images/Image18.png}
+		\caption{}
+		\label{fig:programCU}
+	\end{subfigure}
+	\caption{Possible Implementation of Control Unit}
+\end{figure}
