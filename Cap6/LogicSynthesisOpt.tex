@@ -356,5 +356,208 @@ The final cover will be \textbf{ e, f, b, c } so that $f = yz + x'y + y'z'v + xy
 \subsection{Petrick's Method}
 
 
+Petrick's method (also known as the \textit{branch-and-bound method}) is a technique for determining all minimum sum-of-products solutions from a prime implicant chart. Petrick's method is very tedious for large charts, but it is easy to implement on a computer. \\
+It follows the same idea of Quine-McCluskey algorithm, reducing the table:
+
+\begin{itemize}
+	\item Iteratively identify essentials primes
+	\item Save them in the cover
+	\item Remove covered minterms
+\end{itemize}
+
+\paragraph{Petrick Algorithm} act in the following way:
+
+\begin{itemize}
+	\item Write covering clauses in \textit{product-of-sum form}
+	\item Multiply out product-of-sum form into sum-of-product one (\textbf{this passage has an exponential cost})
+	\item Select them the cube of minimum size
+\end{itemize}
+
+\paragraph{Example} Starting from \textit{Prime table} for the function $ f= a'b'c' + a'b'c + ab'c + abc + abc' $ :
+\bigskip
+
+\begin{center}
+	\begin{tabular}{|c c|c c c c|}
+	\hline
+	{} & {} & $\alpha$ & $\beta$ & $\gamma$ & $\delta$ \\ \hline
+	m0 & 000 & 1 & 0 & 0 & 0 \\ \hline
+	m1 & 001 & 1 & 1 & 0 & 0 \\ \hline
+	m5 & 101 & 0 & 1 & 1 & 0 \\ \hline
+	m6 & 111 & 0 & 0 & 1 & 1 \\ \hline
+	m7 & 110 & 0 & 0 & 0 & 1 \\ \hline
+	
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+	\item m0 is only covered by $\alpha$ $ \rightarrow $ m0 = $\alpha$
+	\item m1 is covered by $\alpha$ and $\beta$ $ \rightarrow $ m1 = $\alpha$ + $\beta$
+	\item m5 is covered by $\beta$ and $\gamma$ $ \rightarrow $ m5 = $\beta$ + $\gamma$
+	\item m6 is covered by $\gamma$ and $\delta$ $ \rightarrow $ m6 = $\gamma$ + $\delta$
+	\item m7 is only covered by $\delta$ $ \rightarrow $ m7 = $\delta$\\
+\end{itemize}
+
+So creating the product-of-sum form:\\
+\begin{center}
+	$(\alpha)(\alpha+\beta)(\beta+\gamma)(\gamma+\delta)(\delta) = 1$;\\
+	$(\alpha+\alpha\beta)(\beta+\gamma)(\gamma\delta+\delta) = 1$;\\
+	$(\alpha)(\beta+\gamma)(\delta) = 1$;\\
+	$\alpha\beta\gamma + \alpha\gamma\delta = 1$;\\
+\end{center}
+
+in this case, to guarantee the cover of all minterms we have to solve the equation and have two different solution (both minumum) and we can chose to take $\alpha, \beta, \gamma$ or $\alpha, \gamma, \delta$
+
+
+\subsection{Espresso-Exact}
+
+The major improvements of the \textit{Espresso Exact} algorithm over the Quine-McCluskey algorithm consist of the construction of a \textbf{smaller reduced prime implicant table } and of the use of an efficient branch-and-bound algorithm for covering.\\
+
+Espresso Exact partitions the prime implicants into three sets: essentials, partially redundunt and totally redundant. The \textbf{essentials} have the usual meaning, the \textbf{totally redundant} primes are those covered by the essentials and the don't care set, and the \textbf{partially redundant} set includes the remaining ones. The last set is the only one relevant to the covering phase, and it corresponds to the columns of the reduced implicant table. The rows of the reduced implicant table correspond to sets of minterms, rather than to single minterms as in the case of Quine-McCluskey's algorithm. Namely each row corresponds to all mintenns which are covered by the same subset of prime
+implicants.
+\bigskip 
+
+\begin{center}
+		\begin{tabular}{|c c|}
+		\hline
+		0000 & 1 \\
+		0010 & 1 \\
+		0100 & 1 \\
+		0110 & 1 \\
+		1000 & 1 \\
+		1010 & 1 \\
+		0101 & 1 \\
+		0111 & 1 \\
+		1001 & 1 \\
+		1011 & 1 \\
+		1101 & 1 \\
+		\hline
+	\end{tabular}
+	\quad
+	\quad
+	$ \Leftrightarrow$
+	\quad
+	\quad
+	\begin{tabular}{|c|c c|}
+		\hline
+		$ \alpha $ & 0**0 & 1 \\
+		$ \beta $ & *0*0 & 1 \\
+		$ \gamma $ & 01** & 1 \\
+		$ \delta $ & 10** & 1 \\
+		$ \epsilon $ & 1*01 & 1 \\
+		$ \zeta $ & *101 & 1 \\
+		\hline
+	\end{tabular}
+\end{center}
+
+Prime implicants $ \gamma $ and $ \delta $ are essential, because they cover minterms 0111 and 1011 respectively, which are not covered by any other prime. The remaining primes are \textit{partially redundant}. The reduced prime implicant table is then:
+
+\begin{center}
+	\begin{tabular}{|c|c c c c|}
+	\hline
+	{} & $ \alpha $ & $ \beta $  & $ \epsilon $ & $ \zeta $ \\ \hline
+	0000, 0010 & 1 & 1 & 0 & 0 \\
+	1101 & 0 & 0 & 1 & 1 \\
+	\hline
+\end{tabular}
+
+\end{center}
+
+There are four different covers with minimum cardinality {$ \alpha, \gamma, \delta, \epsilon $}, {$ \beta,\gamma,\delta,\epsilon $} etc. that however include the essential prime implicants $ \delta, \gamma $ 
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.7\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image4.png}
+		\caption{Prime implicants}
+		\label{fig:primeImpl}
+	\end{subfigure}
+	\quad
+	\begin{subfigure}[b]{0.7\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image5.png}
+		\caption{Alternative Minimum Covers}
+		\label{fig:altminim}
+	\end{subfigure}
+\end{figure}
+\paragraph{Espresso-Exact two-level logic minimizer}
+\begin{enumerate}
+	\item select an arbitrary coloumn C
+	\item using tabular methods and knowing that C will be part of the cover find the \textit{minimum} cover and evaluate cost function
+	\item Assume than thet C will be not part of the cover and find the minimum
+	\item Keep the best e reiterate
+\end{enumerate}
+
+\subsection{Heuristic Methods}
+
+This methods were introduced to decrease the complexity of the exact algorithm that were the bottleneck of the optimization phase. The goal of this type of algorithm is to provide irredundant cover with \textit{reasonably small size} in a \textit{reasonable time}. What we are going to loose? The final cover will be a \textbf{minimal cover} and not minimum one. This type of methods for this reason find a \textit{local best} and not a global one infact the base of this algorithm are these steps:
+\begin{enumerate}
+	\item Start with an initial cover
+	\item Search for feasible neighbours whose cost less.
+	\item If found one, keep it and reiterate on that
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.55\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image6.png}
+		\caption{Optimal case}
+		\label{fig:heurbest}
+	\end{subfigure}
+	\quad
+	\begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image7.png}
+		\caption{The problem to have the search inside a limited scope}
+		\label{fig:heurproblem}
+	\end{subfigure}
+\end{figure}
+
+In this case is simple to understand that there are the main proble given to the local search that may stuck at a local minimum, so we need a mechanism to step out.\\
+
+\paragraph{Heuristic optimization: Operators}
+
+\begin{itemize}
+	\item \textbf{Expand}, Make implicants prime (prime cover) and remove covered implicants.
+	\item \textbf{Irredundant} make a prime cover irredundant (avoiding the minterms covered more than once)
+	\item \textbf{Reduce} the size of each implicants preserving the cover, return a cover that is not prime
+\end{itemize}
+
+\paragraph{Expand operator}  makes a cover prime and minimal with respect to single-implicant containment. Implicants are processed one at a time. Each non-prime implicant is expanded to a prime(i.e., it is replaced by a prime implicant that contains it). Then, all other implicants covered by the expanded implicant are deleted.\\
+\bigskip\\
+
+
+An \textbf{example of Expansion} could be the following one:
+\begin{itemize}
+	\item Try to expand 0000
+	\item raising to don't care one of the literals in this way, 0*00
+	\item can be done only if 0000 and 0100 is both part of the cover
+	\item if the previous condition is satisfied then drop 0100 to the cover and previous 0000 $ \rightarrow $ 0*00
+\end{itemize}
+
+\textit{Warning}: the previous operation has to be done for each literal of the considered minterm.
+
+\paragraph{Irredundant operator} makes a cover irredundant. A minimal subset of implicants is selected such that no single implicant in that subset is covered by the remaining ones in that subset.
+\bigskip\\
+An \textbf{example of Irredundant operator} considering the cover ($ \alpha=0**0, \beta=*0*0, \gamma=01**, \delta=10**, \varepsilon= 1*01 $) could be the following one:
+\begin{itemize}
+	\item 00*0 contained into $ \alpha, \beta $
+	\item 10*0 contained into $ \delta, \beta $
+	\item 01*0 contained in $ \gamma, \alpha $
+	\item in this case we can drop $ \alpha $ or $ \beta $ ( not $ \delta $ and $ \gamma $ because they are essential)
+\end{itemize}
+
+The previous cover is $ \alpha, \beta, \gamma, \delta, \varepsilon $ dropping $ \alpha $ the new cover will be $ \beta, \gamma, \delta, \varepsilon $ that is a minimal cover.
+
+\paragraph{Reduce operator} transforms a cover into a non-prime cover with the same cardinality. Implicants are processed one at a time. The reduce operator attempts to replace each implicant with another that is contained in it, subject to the condition that
+the reduced implicants, along with the remaining ones, still cover the function.
+\bigskip\\
+
+An \textbf{example of Reduce operator} considering the cover ($ \alpha=0**0, \beta=*0*0, \gamma=01**, \delta=10**, \varepsilon= 1*01 $) could be the following one:
+\begin{itemize}
+	\item reduce $ \alpha  = 0**0 $ to \textbf{nothing, drop the prime}.
+	\item reduce $ \beta  = *0*0 $ to $ \beta'  = 00*0 $  
+	\item reduce $ \varepsilon  = 1*01 $ to $ \varepsilon'  = 1101 $
+\end{itemize}
+
+So the new cover is {$ \beta', \gamma, \delta, \varepsilon'$} where we removed the don't care that bring to higher cost (so worst solution).s
+
 
 
