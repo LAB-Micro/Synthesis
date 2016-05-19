@@ -552,12 +552,359 @@ the reduced implicants, along with the remaining ones, still cover the function.
 
 An \textbf{example of Reduce operator} considering the cover ($ \alpha=0**0, \beta=*0*0, \gamma=01**, \delta=10**, \varepsilon= 1*01 $) could be the following one:
 \begin{itemize}
-	\item reduce $ \alpha  = 0**0 $ to \textbf{nothing, drop the prime}.
+	\item reduce $ \alpha  = 0**0 $ to \textbf{nothing, drop the prime} (covered also by other).
 	\item reduce $ \beta  = *0*0 $ to $ \beta'  = 00*0 $  
 	\item reduce $ \varepsilon  = 1*01 $ to $ \varepsilon'  = 1101 $
 \end{itemize}
 
-So the new cover is {$ \beta', \gamma, \delta, \varepsilon'$} where we removed the don't care that bring to higher cost (so worst solution).s
+So the new cover is {$ \beta', \gamma, \delta, \varepsilon'$} where we removed the don't care that bring to higher cost (so worst solution).
 
+\subsubsection{Heuristic Espresso}
 
+Exist different heuristics that differ in the type and sequence of operators applied. Espresso iteratively repeat this step:
+
+\begin{enumerate}
+	\item Expand + Irredundant (make the cover prime and irredundant, so \textit{find the best neighbor})
+	\item Reduce (perturb the voer find some worst to \textit{step out of local minimum})  
+	\item Reiterate until a small irredundant cover is obtained (possibly the global minimum)
+\end{enumerate}
+
+\paragraph{Espresso - Expand} starting from a minterm, try to delete one or more literals, in this case we have to \textbf{check the validity}, infact the expanded implicant needs to have \textit{void intersection withe the OFF-set}.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image8.png}
+		\caption{Correct expansion}
+		\label{fig:goodexpand}
+	\end{subfigure}
+	\quad
+	\begin{subfigure}[b]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image9.png}
+		\caption{Can't expand because the intersection with OFF-set is not void}
+		\label{fig:badexpand}
+	\end{subfigure}
+\end{figure}
+
+The \textbf{goal} is to expand non-prime implicant to prime with the \textit{latest} number of literals
+
+\paragraph{Espresso - Irredundant} In this case the algorithm has to check for redundant implicants (redundant if all the minterms covered by that implicant are covered by other implicants contained into the cover)
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{./Cap6/Images/Image10.png}
+	\caption{$yz'$ is redundant because $x'y$ and $xz'$ cover all minterms contained in $yz'$}
+	\label{fig:checkredundant}
+\end{figure}
+
+\paragraph{Espresso - Reduce} In this case the algorithm starting from a prime implicant add one or more literlas and check for validity.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./Cap6/Images/Image11.png}
+	\caption{Reduce $a'$ adding $b'$ obtaining $a'b'$}
+	\label{fig:reduceespresso}
+\end{figure}
+
+\textit{Why we want to do a reduction}? It brings to a \textit{worst} solution, it's true but, it help us to decrease the size of implicants such that \underline{next expansion} may lead to a better solution. We need this operation to step out te \textit{local minimum} (for this reason Reduce will never be the last operation).
+
+\bigskip 
+
+There are some additional concerns about Espresso, infact we have to:
+
+\begin{itemize}
+	\item check the validity of expansion
+	\item decide the direction in which we move when make the expansion and reduction  
+	\item how many literals drop (order of expansion)
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{./Cap6/Images/Image12.png}
+	\caption{Espresso PseudoCode}
+	\label{fig:espressopseudo}
+\end{figure}
+
+\subsection{Heuristic Optimization Tool}
+
+Need this type of tools to check the validity of a cover using Containment and Complementation that use \textit{tautology} definition. There are some definition to prepare the background:
+
+\begin{itemize}
+	\item \textbf{Tautology}: check if a function is always true.
+	\item \textbf{Containment}: check if a cube is contained in a cover, it's used in irreduntant operator (for example to find cubes contained in multiple primes).
+	\item \textbf{Complementation}: Compute the complement of a function to find the OFF-set.\\  $OFFset = Complement( ONset + DCset )$ 
+\end{itemize}
+
+\paragraph{Other Definition} Given a function $f(x_{1}, x_{2},...x_{i},... x_{n})$:
+\begin{itemize}
+	\item \textbf{Cofactor of $f$ with respect to variable $x_{i}$ }: $f_{xi} = f(x_{1}, x_{2},...x_{i}=1,... x_{n})$
+	\item \textbf{Cofactor of $f$ with respect to variable $x_{i}'$ }: $f_{xi'} = f(x_{1}, x_{2},...x_{i}=0,... x_{n})$
+	\item \textbf{Boole's Expansion theorem}: $f(x_{1}, x_{2},...x_{i},... x_{n}) = x_{i}f_{xi}+x_{i}'f_{xi'} $
+\end{itemize}
+
+\paragraph{Example} Starting function $f = ab + bc + ac$:
+
+\begin{itemize}
+	\item $f_{a} = b+c$ because $b+c+bc = b+c$
+	\item $f_{a'} = bc$
+	\item Expansion: $f = af_{a} + a'f_{a'} = a(b+c) + a'bc$
+\end{itemize}
+
+\paragraph{Unateness(monotonicity)} Function $f(x_{1}, x_{2},...x_{i},... x_{n})$ is defined:
+
+\begin{itemize}
+	\item \textbf{Positive unate} in $x_{i}$ when $ f_{xi} \geq f_{xi'} $ 
+	\item \textbf{Negative unate} in $x_{i}$ when $ f_{xi} \leq f_{xi'} $ 
+\end{itemize}
+A function is positive/negative unate when positive/negative unate in all its vaiables. In teh previous example $f_{a} = b+c$ and $f_{a'} = bc$:
+
+\begin{center}
+	\begin{tabular}{c | c | c |}
+		
+		$bc$ & \textbf{1} & \textbf{0} \\ \hline
+		\textbf{1} & 1 & 0 \\ \hline 
+		\textbf{0} & 0 & 0 \\ \hline  
+		
+		\hline
+	\end{tabular}
+	\quad
+	\quad
+	$ \leq $
+	\quad
+	\quad
+	\begin{tabular}{ c | c | c |}
+		$b + c$ & \textbf{1} & \textbf{0} \\ \hline
+		\textbf{1} & 1 & 1 \\ \hline 
+		\textbf{0} & 1 & 0 \\ \hline  
+	\end{tabular}
+\end{center}
+
+\paragraph{Operators} Function $f(x_{1}, x_{2},...x_{i},... x_{n})$ is defined:
+
+\begin{itemize}
+	\item \textbf{Boolean difference} of $f$ with respect to variable $x_{i}$: $\delta f/\delta x_{i} \equiv f_{xi} \oplus f_{xi'}$ 
+	\item \textbf{Consensus} of $f$ with respect to variable $x_{i}$: $C_{xi} \equiv f_{xi} \cdot f_{xi'}$ $\Rightarrow$ extract the part of the function independent by the variable under test.
+	\item \textbf{Smoothing} of $f$ with respect to variable $x_{i}$: $S_{xi} \equiv f_{xi} + f_{xi'}$ $\Rightarrow$ function itself when you drop the variable.
+\end{itemize}
+
+\textbf{Tautology} plays an important role in all algorithms for logic optimization. Despite the intractability of the problem, the question if a function is a tautology can be answered efficiently using the recursive paradigm. To check it we have to define \textit{Matrix Representation}:
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.15\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image13.png}
+		\caption{Symbols}
+		\label{fig:symbols}
+	\end{subfigure}
+	\quad
+	\quad
+	\quad
+	\begin{subfigure}[b]{0.15\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image14.png}
+		\caption{Encoding}
+		\label{fig:encoding}
+	\end{subfigure}
+	\quad
+	\quad
+	\quad
+	\begin{subfigure}[b]{0.30\textwidth}
+		\includegraphics[width=\textwidth]{./Cap6/Images/Image15.png}
+		\caption{Example of representation}
+		\label{fig:represexample}
+	\end{subfigure}
+\end{figure}
+
+We use this representation to better verify if a given cover, represent all the function. Infact, with the cube notation we follow this pseudocode to extract the cofactor for any variable:
+
+\begin{center}
+	$f_{xi} \rightarrow x_{i}$ (cube notation)\\
+	for each row j of $f$ \\
+	if($x_{i} \bigcap row_{j} \neq void$) \{ \\
+		create \textbf{supercube} of $row_{j}$ with respect to $x_{i}$\}
+		\bigskip\\
+		where \textit{void representation is 00 }and \textbf{Supercube} is the rising to don't care of the variable $x_{i}$ and it's done with a \textbf{bitwise OR} 
+\end{center}
+\bigskip
+
+We use this type of representation and this algorithm because we have some advantages:
+\begin{itemize}
+	\item \textbf{Binary values}, with two bits for each symbol and is more efficent than a char (8 bit minimum)
+	\item We can apply binary operations for intersection (bitwise AND) and to calculate supercube (bitwise OR).
+	\item Binary operation are really \textit{fast} and we could parallelize them.
+\end{itemize}
+
+So in this way we can calculate the cofactor and verify that f is a tautology, given that:
+
+\begin{center}
+\textit{a function $f$ is a tautology if and only if its cofactors with respect to any variable are a tautology.}
+\end{center}
+
+\paragraph{Example} given the function $f = a'b' + ab$:\\
+
+\begin{center}
+	
+	\begin{tabular}{c  c}
+		\begin{tabular}{c | c | c |}
+			1 step & \textbf{a} & \textbf{b} \\ \hline
+			\textbf{a'b'} & 10 & 10 \\ \hline 
+			\textbf{ab} & 01 & 01 \\ \hline
+		\end{tabular}
+		\quad
+		\quad
+		\quad
+		\quad
+		\quad
+		\quad
+		\quad
+		\begin{tabular}{ c | c | c |}
+			{} & \textbf{a} & \textbf{b} \\ \hline
+			\textbf{a} & 01 & 11 \\ \hline  
+		\end{tabular}
+	\end{tabular}
+\end{center}
+
+Then we can create the row of the table to verify the tautology in this way:\\
+
+Take the value for a'b' in the cube notation table and do the \textbf{bitwise AND} with the row of a in the second table (cube notation of a):\\
+
+\begin{center}
+	\begin{tabular}{c  c}
+		\begin{tabular}{c | c | c}
+			10 & 10 & (cube notation a'b') \\ \hline
+			01 & 11 & (cube notation of a)\\ \hline 
+			00 & 10 & (bitwise AND) \\ \hline
+			\textbf{void} & not void & (intersection)
+		\end{tabular}
+		\quad
+		\quad
+		\quad
+		\quad
+		\quad
+		\quad
+		\quad
+		\begin{tabular}{c | c | c}
+			01 & 01 & (cube notation ab) \\ \hline
+			01 & 11 & (cube notation of a)\\ \hline 
+			01 & 01 & (bitwise AND) \\ \hline
+			not void & not void & (intersection)
+		\end{tabular}
+	\end{tabular}
+\end{center}
+
+	Only if all the intersection is not void all the intersection is not void, so in the first case the intersection is considered void, in the second one bot are not void, so, that row (bitwise AND) will contribuite to the final table:\\ 
+	
+\begin{center}
+		\begin{tabular}{c | c | c}
+		01 & 01 & (cube notation ab) \\ \hline
+		10 & 00 & (\textit{complementary} of a)\\ \hline 
+		\textbf{11} & \textbf{01} & (bitwise OR) \\
+	\end{tabular}
+\end{center}
+	
+Calculate the supercube in this way: $f_{a} = 11,01 = b$ (a corresponding to 11 is a don't care, b is positive in representation 01).\\
+
+This is used in the \textbf{recursive paradigm}:
+
+\begin{itemize}
+	\item Expand about a variable
+	\item Check if cofactors are a Tautology (if all cofactors are TRUE, then the function is a tautology otherwise the function is not)
+\end{itemize}
+
+\textit{When we stop?} There are these three \textbf{terminal cases}:
+\\
+\begin{itemize}
+	\item The cover matrix ha a row of all 1s(Tautology cube). \textbf{YES, TAUTOLOGY}
+	\item The cover has a coloumn of all 0s, so a variable never takes a value. \textbf{NO TAUTOLOGY}
+	\item The cover depends on only by one variable, and there is no coloumn of 0s in that field \textbf{YES, TAUTOLOGY}
+\end{itemize}
+
+\paragraph{Example of verification} Given a function $f= ab+ac+ab'c'+a'$:
+
+\begin{center}
+	\begin{tabular}{c || c | c | c}
+	{} & a & b & c \\ \hline \hline
+	ab & 01 & 01 & 11\\ \hline
+	ac & 01 & 11 & 01\\ \hline 
+	ab'c' & 01 & 10 & 10 \\ \hline
+	a' & 10 & 11 & 11
+\end{tabular}
+\end{center}
+
+$f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't care, c don't care):\\
+
+\begin{center}
+	\begin{tabular}{c  c}
+		\begin{tabular}{c | c | c c}
+			01 & 01 & 11 & (cube notation ab) \\ \hline
+			01 & 11 & 11 & (cube notation of a)\\ \hline 
+			01 & 01 & 11 & (bitwise AND) \\ \hline
+			not void & not void & not void & (intersection)
+		\end{tabular}
+		\quad
+		\quad
+		\quad
+		\begin{tabular}{c  c  c c}
+			01 & 01 & 11 & (cube notation ab) \\ \hline
+			10 & 00 & 00 & (complementary of a)\\ \hline 
+			\textbf{11} & \textbf{01} & \textbf{11} & (bitwise OR) \\ \hline
+			\textbf{first} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
+		\end{tabular}
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c  c}
+		\begin{tabular}{c | c | c c}
+			01 & 11 & 01 & (cube notation ac) \\ \hline
+			01 & 11 & 11 & (cube notation of a)\\ \hline 
+			01 & 11 & 01 & (bitwise AND) \\ \hline
+			not void & not void & not void & (intersection)
+		\end{tabular}
+		\quad
+		\quad
+		\quad
+		\begin{tabular}{c  c  c c}
+			01 & 11 & 01 & (cube notation ac) \\ \hline
+			10 & 00 & 00 & (complementary of a)\\ \hline 
+			\textbf{11} & \textbf{11} & \textbf{01} & (bitwise OR) \\ \hline
+			\textbf{second} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
+		\end{tabular}
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c  c}
+		\begin{tabular}{c | c | c c}
+			01 & 10 & 10 & (cube notation ab'c') \\ \hline
+			01 & 11 & 11 & (cube notation of a)\\ \hline 
+			01 & 10 & 10 & (bitwise AND) \\ \hline
+			not void & not void & not void & (intersection)
+		\end{tabular}
+		\quad
+		\quad
+		\quad
+		\begin{tabular}{c  c  c c}
+			01 & 10 & 10 & (cube notation ab'c') \\ \hline
+			10 & 00 & 00 & (complementary of a)\\ \hline 
+			\textbf{11} & \textbf{10} & \textbf{10} & (bitwise OR) \\ \hline
+			\textbf{third} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
+		\end{tabular}
+	\end{tabular}
+\end{center}
+
+\begin{center}
+		\begin{tabular}{c | c | c c}
+			10 & 11 & 11 & (cube notation ab'c') \\ \hline
+			01 & 11 & 11 & (cube notation of a)\\ \hline 
+			00 & 11 & 11 & (bitwise AND) \\ \hline
+			\textbf{void} & not void & not void & (intersection)
+		\end{tabular}
+\end{center}
+
+So the $f_{a}$ will be the following one, but we cannot apply any of the stopping rules:
+\begin{center}
+	\begin{tabular}{c | c | c}
+		11 & 01 & 11 \\ \hline
+		11 & 11 & 01 \\ \hline 
+		11 & 10 & 10 \\ 
+	\end{tabular}
+\end{center}
 
