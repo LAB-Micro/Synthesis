@@ -811,7 +811,7 @@ This is used in the \textbf{recursive paradigm}:
 \textit{When we stop?} There are these three \textbf{terminal cases}:
 \\
 \begin{itemize}
-	\item The cover matrix ha a row of all 1s(Tautology cube). \textbf{YES, TAUTOLOGY}
+	\item The cover matrix has a row of all 1s(Tautology cube). \textbf{YES, TAUTOLOGY}
 	\item The cover has a coloumn of all 0s, so a variable never takes a value. \textbf{NO TAUTOLOGY}
 	\item The cover depends on only by one variable, and there is no coloumn of 0s in that field \textbf{YES, TAUTOLOGY}
 \end{itemize}
@@ -832,8 +832,8 @@ $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't car
 
 \begin{center}
 	\begin{tabular}{c  c}
-		\begin{tabular}{c | c | c c}
-			01 & 01 & 11 & (cube notation ab) \\ \hline
+		\begin{tabular}{c c c c}
+			01 & 01 & 11 & (cube notation ab) \\ 
 			01 & 11 & 11 & (cube notation of a)\\ \hline 
 			01 & 01 & 11 & (bitwise AND) \\ \hline
 			not void & not void & not void & (intersection)
@@ -842,7 +842,7 @@ $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't car
 		\quad
 		\quad
 		\begin{tabular}{c  c  c c}
-			01 & 01 & 11 & (cube notation ab) \\ \hline
+			01 & 01 & 11 & (cube notation ab) \\
 			10 & 00 & 00 & (complementary of a)\\ \hline 
 			\textbf{11} & \textbf{01} & \textbf{11} & (bitwise OR) \\ \hline
 			\textbf{first} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
@@ -852,8 +852,8 @@ $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't car
 
 \begin{center}
 	\begin{tabular}{c  c}
-		\begin{tabular}{c | c | c c}
-			01 & 11 & 01 & (cube notation ac) \\ \hline
+		\begin{tabular}{c c c c}
+			01 & 11 & 01 & (cube notation ac) \\ 
 			01 & 11 & 11 & (cube notation of a)\\ \hline 
 			01 & 11 & 01 & (bitwise AND) \\ \hline
 			not void & not void & not void & (intersection)
@@ -862,7 +862,7 @@ $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't car
 		\quad
 		\quad
 		\begin{tabular}{c  c  c c}
-			01 & 11 & 01 & (cube notation ac) \\ \hline
+			01 & 11 & 01 & (cube notation ac) \\
 			10 & 00 & 00 & (complementary of a)\\ \hline 
 			\textbf{11} & \textbf{11} & \textbf{01} & (bitwise OR) \\ \hline
 			\textbf{second} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
@@ -872,8 +872,8 @@ $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't car
 
 \begin{center}
 	\begin{tabular}{c  c}
-		\begin{tabular}{c | c | c c}
-			01 & 10 & 10 & (cube notation ab'c') \\ \hline
+		\begin{tabular}{c  c  c c}
+			01 & 10 & 10 & (cube notation ab'c') \\ 
 			01 & 11 & 11 & (cube notation of a)\\ \hline 
 			01 & 10 & 10 & (bitwise AND) \\ \hline
 			not void & not void & not void & (intersection)
@@ -882,7 +882,7 @@ $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't car
 		\quad
 		\quad
 		\begin{tabular}{c  c  c c}
-			01 & 10 & 10 & (cube notation ab'c') \\ \hline
+			01 & 10 & 10 & (cube notation ab'c') \\ 
 			10 & 00 & 00 & (complementary of a)\\ \hline 
 			\textbf{11} & \textbf{10} & \textbf{10} & (bitwise OR) \\ \hline
 			\textbf{third} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
@@ -891,15 +891,16 @@ $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't car
 \end{center}
 
 \begin{center}
-		\begin{tabular}{c | c | c c}
-			10 & 11 & 11 & (cube notation ab'c') \\ \hline
+		\begin{tabular}{c c c c}
+			10 & 11 & 11 & (cube notation a') \\ 
 			01 & 11 & 11 & (cube notation of a)\\ \hline 
 			00 & 11 & 11 & (bitwise AND) \\ \hline
 			\textbf{void} & not void & not void & (intersection)
 		\end{tabular}
 \end{center}
 
-So the $f_{a}$ will be the following one, but we cannot apply any of the stopping rules:
+So the $f_{a}$ will be the following one:
+
 \begin{center}
 	\begin{tabular}{c | c | c}
 		11 & 01 & 11 \\ \hline
@@ -907,4 +908,152 @@ So the $f_{a}$ will be the following one, but we cannot apply any of the stoppin
 		11 & 10 & 10 \\ 
 	\end{tabular}
 \end{center}
+
+C(a') = 10 11 11 (a negative, b don't care, c don't care):
+
+\begin{center}
+	\begin{tabular}{c c c c}
+		01 & 01 & 11 & (cube notation ab) \\ 
+		10 & 11 & 11 & (cube notation of a')\\ \hline 
+		00 & 01 & 11 & (bitwise AND) \\ \hline
+		\textbf{void} & not void & not void & (intersection)
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c c c c}
+		01 & 11 & 01 & (cube notation ac) \\ 
+		10 & 11 & 11 & (cube notation of a')\\ \hline 
+		00 & 11 & 01 & (bitwise AND) \\ \hline
+		\textbf{void} & not void & not void & (intersection)
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c c c c}
+		01 & 10 & 10 & (cube notation ab'c') \\ 
+		10 & 11 & 11 & (cube notation of a')\\ \hline 
+		00 & 11 & 01 & (bitwise AND) \\ \hline
+		\textbf{void} & not void & not void & (intersection)
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c c}
+		\begin{tabular}{c c c c}
+			10 & 11 & 11 & (cube notation ab'c') \\ 
+			10 & 11 & 11 & (cube notation of a')\\ \hline 
+			10 & 11 & 11 & (bitwise AND) \\ \hline
+			not void & not void & not void & (intersection)
+		\end{tabular}
+		\quad\quad
+		\begin{tabular}{c  c  c c}
+			10 & 11 & 11 & (cube notation a') \\ 
+			01 & 00 & 00 & (complementary of a')\\ \hline 
+			\textbf{11} & \textbf{11} & \textbf{11} & (bitwise OR) \\ \hline
+			\textbf{first} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
+		\end{tabular}
+		
+	\end{tabular}
+\end{center}
+ $f_{a'}$ = 11 11 11 and we can apply the first rule, so \textbf{it's a tautology}. \\
+ 
+To $f_{a}$ we cannot apply any of the stopping rules, we have to continue with $f_{a|b}$ and $f_{a|b'}$, starting from $f_{a}$:
+
+\begin{center}
+		\begin{tabular}{c | c | c}
+		a & b & c \\ \hline
+		11 & 01 & 11 \\ \hline
+		11 & 11 & 01 \\ \hline 
+		11 & 10 & 10 \\
+	\end{tabular}
+\end{center}
+
+b = 11 01 11
+
+\begin{center}
+	\begin{tabular}{c c}
+		\begin{tabular}{c c c c}
+			11 & 01 & 11 & (first row of $f_{a}$) \\ 
+			11 & 01 & 11 & (cube notation of b)\\ \hline 
+			11 & 01 & 11 & (bitwise AND) \\ \hline
+			not void & not void & not void & (intersection)
+		\end{tabular}
+		\quad\quad
+		\begin{tabular}{c  c  c c}
+			11 & 01 & 11 & (first row of $f_{a}$) \\ 
+			00 & 10 & 00 & (complementary of b)\\ \hline 
+			\textbf{11} & \textbf{11} & \textbf{11} & (bitwise OR) \\ \hline
+			\textbf{first} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
+		\end{tabular}
+	\end{tabular}
+	
+	\bigskip
+	In this case we find a row of 1s, so for the first rule we can stop, \textbf{this is a tautology} $\Longrightarrow f_{a|b}$
+\end{center}
+
+Now we have to verify the $f_{a|b'}$: 
+
+\begin{center}
+	\begin{tabular}{c c c c}
+		11 & 01 & 11 & (first row of $f_{a}$) \\ 
+		11 & 10 & 11 & (cube notation of b')\\ \hline 
+		11 & 00 & 11 & (bitwise AND) \\ \hline
+		not void & \textbf{void} & not void & (intersection)
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c c}
+		\begin{tabular}{c c c c}
+			11 & 11 & 01 & (second row of $f_{a}$) \\ 
+			11 & 10 & 11 & (cube notation of b')\\ \hline 
+			11 & 01 & 01 & (bitwise AND) \\ \hline
+			not void & not void & not void & (intersection)
+		\end{tabular}
+		\quad\quad
+		\begin{tabular}{c  c  c c}
+			11 & 11 & 01 & (second row of $f_{a}$) \\ 
+			00 & 01 & 00 & (complementary of b')\\ \hline 
+			11 & 11 & 01 & (bitwise OR) \\ \hline
+			\textbf{first} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
+		\end{tabular}
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c c}
+		\begin{tabular}{c c c c}
+			11 & 10 & 10 & (third row of $f_{a}$) \\ 
+			11 & 10 & 11 & (cube notation of b')\\ \hline 
+			11 & 10 & 10 & (bitwise AND) \\ \hline
+			not void & not void & not void & (intersection)
+		\end{tabular}
+		\quad\quad
+		\begin{tabular}{c  c  c c}
+			11 & 10 & 10 & (third row of $f_{a}$) \\ 
+			00 & 01 & 00 & (complementary of b')\\ \hline 
+			11 & 11 & 10 & (bitwise OR) \\ \hline
+			\textbf{second} & \textbf{row} & \textbf{of} & \textbf{cofactor} \\
+		\end{tabular}
+	\end{tabular}
+\end{center}
+
+So we obtain the table: 
+
+\begin{center}
+	\begin{tabular}{c c c}
+		\hline
+		11 & 11 & \textbf{01} \\ 
+		11 & 11 & \textbf{10} \\ \hline 
+		
+	\end{tabular}
+\end{center}
+
+In this case we can apply the third rule, infact, we can note that $f_{a|b'}$ depend only on one variable. So $f_{a|b'}$ \textbf{is a tautology}.\\
+
+We can conclude here infact, $f_{a}$, $f_{a|b}$ and $f_{a|b'}$ is a tautology $\Longrightarrow$ $f$ is a tautology.
+
+
+
 
