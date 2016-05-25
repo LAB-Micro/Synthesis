@@ -816,7 +816,7 @@ This is used in the \textbf{recursive paradigm}:
 	\item The cover depends on only by one variable, and there is no coloumn of 0s in that field \textbf{YES, TAUTOLOGY}
 \end{itemize}
 
-\paragraph{Example of verification} Given a function $f= ab+ac+ab'c'+a'$:
+\paragraph{FULL example of verification} Given a function $f= ab+ac+ab'c'+a'$:
 
 \begin{center}
 	\begin{tabular}{c || c | c | c}
@@ -825,7 +825,7 @@ This is used in the \textbf{recursive paradigm}:
 	ac & 01 & 11 & 01\\ \hline 
 	ab'c' & 01 & 10 & 10 \\ \hline
 	a' & 10 & 11 & 11
-\end{tabular}
+	\end{tabular}
 \end{center}
 
 $f = af_{a} + a'f_{a'} \Leftrightarrow$ C(a) = 01 11 11 (a positive, b don't care, c don't care):\\
@@ -1055,5 +1055,86 @@ In this case we can apply the third rule, infact, we can note that $f_{a|b'}$ de
 We can conclude here infact, $f_{a}$, $f_{a|b}$ and $f_{a|b'}$ is a tautology $\Longrightarrow$ $f$ is a tautology.
 
 
+\paragraph{Containment Theorem} A cover $F$ contains an implicant $\alpha$ if and only if $F_{\alpha}$ is a tautology. \textit{As consequence} containment can be verified by the tautology algorithm.
 
 
+\paragraph{Example (Verify Containment)} Given a function $f= ab+ac+ab'c'+a'$, if we want to check covering of $bc$ start with the cofactor with respect to $bc$: 
+
+\begin{center}
+	\begin{tabular}{c | c | c}
+		01 & 11 & 11 \\ \hline
+		01 & 11 & 11 \\ \hline 
+		10 & 11 & 11 \\ 
+	\end{tabular}
+\end{center}
+
+In this case $f_{bc}$ depends only on $a$ and there is no column of 0s $\rightarrow$ \textbf{Tautology} $\rightarrow$ bc is contained by $f$
+
+\paragraph{Complementation} Obtain $f'$ from $f$ is difficult for complex function but we can simlify it using this theorem: 
+
+\begin{center}
+	$f' = xf'_{x} + x'f'_{x'}$
+\end{center}
+
+So, we can follow this steps: 
+
+\begin{itemize}
+	\item Select a variable
+	\item Compute co-factors
+	\item Complement co-factors
+\end{itemize}
+
+Recur until one of this \textbf{termination rules} match:
+
+\begin{itemize}
+	\item Cover $F$ is void 
+	\item The cover is a Tautology
+	\item The cover $F$ consist only of one implicant
+\end{itemize}
+
+
+\paragraph{Example} $f = ab + ac + a'$, given the rule that $f' = xf'_{x} + x'f'_{x'}$, selecting the variable $a$:
+
+\begin{center}
+	\begin{tabular}{c || c | c | c}
+		{} & a & b & c \\ \hline \hline
+		ab & 01 & 01 & 11\\ \hline
+		ac & 01 & 11 & 01\\ \hline 
+		a' & 10 & 11 & 11
+	\end{tabular}
+\end{center}
+
+and given C(a) = 01 11 11, $f_{a}$ will be:
+
+\begin{center}
+	\begin{tabular}{ c | c | c}
+		11 & 01 & 11\\ \hline
+		11 & 11 & 01\\ 
+	\end{tabular}
+\end{center}
+
+In this case \textit{no rule match } so we must go with a new decomposition. Calculating  C(a') = 10 11 11, we find a row of 1 so, $f_{a'}$ = 11 11 11 $\rightarrow$ $f'_{a'}$ is \textbf{void}. $f' = af'_{a} + 0 $. In this case we have to compute $bf'_{ab} \cdot b'f'_{ab'} = f'_{a}$. Given C(b) = 11 01 11 we will end up with $f_{ab}$ :
+
+\begin{center}
+	\begin{tabular}{ c | c | c}
+		11 & 11 & 11\\ \hline
+		11 & 11 & 01\\ 
+	\end{tabular}
+\end{center}
+
+That depend only by a variable so \textbf{it's a tautology}, for this reason $f'_{ab}$ is \textbf{void}. Given C(b') = 11 10 11 obtain $f_{ab'}$: 
+
+\begin{center}
+	\begin{tabular}{ c | c | c}
+		11 & 11 & 01\\
+	\end{tabular}
+\end{center}
+
+and its complement is \textit{11 11 10}. Now we have to reconstruct the complement intersecting (multipling) it with $b'$ and $a$ as given in the previous formulas $\rightarrow$ $f' = ab'c'$.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{./Cap6/Images/Image16.png}
+	\caption{Example of computing complementation}
+	\label{fig:compcomplement}
+\end{figure}
